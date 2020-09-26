@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名 -->
+<mapper namespace="com.hnguigu.dao.StaffDao">
+
+	<select id="staffLogin" parameterType="Staff" resultType="Staff">
+
+		SELECT * FROM staff WHERE stazhanghao=#{stazhanghao} AND stapwd=#{stapwd};
+
+	</select>
+
+	<!-- 添加 -->
+	<insert id="addStaff" parameterType="Staff">
+        INSERT INTO staff VALUE(#{staid},#{staname},#{stazhanghao},#{stapwd},#{stasex},#{staidentity},#{doorid});
+  </insert>
+
+
+	<select id="queryStaff" parameterType="Staff" resultType="Staff">
+
+		SELECT * FROM staff
+		<where>
+			<if test="staname!=null">and staname like concat('%',#{staname},'%')</if>
+			<if test="stasex!=null">and stasex=#{stasex}</if>
+			<if test="staidentity!=null">and staidentity like concat('%',#{staidentity},'%')</if>
+			<if test="doorid!=null">and doorid=#{doorid}</if>
+		</where>
+
+	</select>
+
+	<!-- 批量删除 -->
+	<delete id="deletePLStaff" parameterType="int">
+		delete from staff where
+		<foreach collection="array" item="staid" open="staid in(" separator="," close=");">
+			#{staid}
+		</foreach>
+	</delete>
+
+	<!-- 删除 -->
+	<delete id="deleteStaff" parameterType="int">
+		delete from staff where staid=#{staid}
+	</delete>
+
+    <!-- 通过id查询数据 -->
+    <select id="queryByStaid" parameterType="int" resultType="Staff" >
+        select * from staff where staid=#{staid}
+    </select>
+
+    <!-- 修改 -->
+    <update id="updateStaff" parameterType="Staff">
+         UPDATE staff SET staname=#{staname},stazhanghao=#{stazhanghao},stapwd=#{stapwd},stasex=#{stasex},staidentity=#{staidentity},doorid=#{doorid} WHERE staid=#{staid};
+    </update>
+</mapper>
